@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Suis-je un bot ?</title>
+<style>
+:root{color-scheme:light dark;--bg:#e8edf1;--card:#fbfcfd;--tx:#13202b;--mu:#5d6c78;--ln:#d3dbe1;--ok:#17814a;--okb:#dff2e8;--wa:#a2620a;--wab:#fbedd2;--ba:#c23a2b;--bab:#fbe2de;--in:#3d4fb8;--inb:#e3e7fa;--c:var(--mu)}
+@media(prefers-color-scheme:dark){:root{--bg:#0f151a;--card:#182027;--tx:#e8eef2;--mu:#93a3af;--ln:#2a353e;--ok:#4cc382;--okb:#13301f;--wa:#e9b04b;--wab:#352a0f;--ba:#f07d6e;--bab:#3b1a16;--in:#93a0f2;--inb:#1c2147}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:720px;margin:0 auto;padding:max(18px,env(safe-area-inset-top)) 16px max(40px,env(safe-area-inset-bottom))}
+h1{font-size:2rem;line-height:1.1;margin:8px 0 6px;font-weight:800;letter-spacing:-.02em}
+.sub{margin:0 0 18px;color:var(--mu)}
+.verdict{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:20px 18px;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.verdict.v-ok{--c:var(--ok)}
+.verdict.v-warn{--c:var(--wa)}
+.verdict.v-bad{--c:var(--ba)}
+.stamp{display:inline-block;color:var(--c);border:3px solid var(--c);border-radius:8px;padding:6px 16px;font-weight:800;font-size:1.3rem;text-transform:uppercase;letter-spacing:.05em;transform:rotate(-3deg);box-shadow:inset 0 0 0 3px var(--card),inset 0 0 0 5px var(--c);margin:4px 0 6px 4px}
+.vd{margin:0;max-width:60ch}
+.score{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.pct{font-size:2.4rem;font-weight:800;line-height:1;color:var(--c)}
+.counts{color:var(--mu);font-size:.95rem}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 10px}
+button{font:inherit;font-weight:600;color:var(--tx);background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:10px 14px;min-height:44px;cursor:pointer}
+button:focus-visible,summary:focus-visible{outline:3px solid var(--in);outline-offset:2px}
+button:disabled{opacity:.6}
+button.main{background:var(--tx);color:var(--bg);border-color:var(--tx)}
+.chips{display:flex;gap:6px;margin:4px 0 6px;flex-wrap:wrap}
+.chips button{padding:6px 14px;min-height:36px;border-radius:999px;font-weight:500}
+.chips button[aria-pressed=true]{background:var(--in);border-color:var(--in);color:#fff}
+h3{font-size:1.05rem;margin:22px 0 8px}
+details.card{background:var(--card);border:1px solid var(--ln);border-left:5px solid var(--c);border-radius:10px;margin-bottom:8px}
+details.ok{--c:var(--ok)}
+details.warn{--c:var(--wa)}
+details.bad{--c:var(--ba)}
+details.info{--c:var(--in)}
+summary{list-style:none;cursor:pointer;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:start}
+summary::-webkit-details-marker{display:none}
+.nm{font-weight:650}
+.vl{grid-column:1/-1;color:var(--mu);font-size:.9rem;word-break:break-word;font-family:ui-monospace,Menlo,Consolas,monospace}
+.tag{font-size:.8rem;font-weight:700;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);border-radius:999px;padding:2px 10px;white-space:nowrap}
+.why{padding:0 14px 14px;margin:0;color:var(--tx);font-size:.95rem}
+.why b{color:var(--c)}
+footer{margin-top:28px;color:var(--mu);font-size:.85rem}
+@media(prefers-reduced-motion:no-preference){.stamp{animation:thud .35s ease-out}@keyframes thud{from{transform:rotate(-3deg) scale(1.6);opacity:0}to{transform:rotate(-3deg) scale(1);opacity:1}}}
+</style>
+</head>
+<body>
+<main>
+<h1>Suis-je un bot ?</h1>
+<p class="sub">Contrôle technique de ton navigateur. Comme chez le garagiste, mais sans la facture surprise.</p>
+
+<section class="verdict" id="verdict" aria-live="polite">
+<span class="stamp" id="stamp">Analyse…</span>
+<div class="score"><span class="pct" id="pct">–</span><span class="counts" id="counts"></span></div>
+<p class="vd" id="vd"></p>
+</section>
+
+<div class="actions">
+<button class="main" id="rerun">Relancer</button>
+<button id="ip">Vérifier mon IP</button>
+<button id="copy">Copier le rapport</button>
+</div>
+
+<div class="chips" id="chips">
+<button data-f="all" aria-pressed="true">Tout</button>
+<button data-f="issues" aria-pressed="false">À corriger</button>
+<button data-f="ok" aria-pressed="false">Ce qui va</button>
+</div>
+
+<div id="list"></div>
+
+<footer>Tout se passe dans ton navigateur. Seul le bouton « Vérifier mon IP » appelle un service externe (ipwho.is). Pour un résultat fiable, ouvre ce fichier directement dans ton vrai navigateur, pas dans l’aperçu d’une appli.</footer>
+</main>
+
+<script>
+const UA=navigator.userAgent;
+const MOBILE_UA=/Android|iPhone|iPad|iPod|Mobile/i.test(UA);
+const CATS=["Automatisation","Cohérence","Matériel","Vie privée","Réseau","Comportement"];
+const LABEL={ok:"OK",warn:"Louche",bad:"Bot-like",info:"Info"};
+const HOST=/amazon|aws|google|microsoft|azure|digitalocean|ovh|hetzner|linode|akamai|vultr|oracle|contabo|scaleway|m247|datacamp|leaseweb|choopa|cloudflare|nord|proton|mullvad|surfshark|cyberghost|private internet|expressvpn|vpn|proxy|hosting|server|cloud|datacenter|data center/i;
+const BEH_NAME="Interactions humaines";
+const B={move:0,touch:0,scroll:0,click:0,key:0,fake:0};
+let items=[],ipItem=null,filter="all",timer=null;
+
+const nativeFn=f=>typeof f==="function"&&/\[native code\]/.test(Function.prototype.toString.call(f));
+const add=(cat,name,s,v,why)=>items.push({cat,name,s,v,why});
+const all=()=>items.concat(ipItem?[ipItem]:[]);
+
+function webgl(){
+  try{
+    const c=document.createElement("canvas");
+    const g=c.getContext("webgl")||c.getContext("experimental-webgl");
+    if(!g)return null;
+    const e=g.getExtension("WEBGL_debug_renderer_info");
+    return{v:e?g.getParameter(e.UNMASKED_VENDOR_WEBGL):g.getParameter(g.VENDOR),r:e?g.getParameter(e.UNMASKED_RENDERER_WEBGL):g.getParameter(g.RENDERER)};
+  }catch(e){return null}
+}
+
+function canvasPrint(){
+  const c=document.createElement("canvas");
+  c.width=240;c.height=40;
+  const x=c.getContext("2d");
+  x.textBaseline="top";x.font="16px Arial";
+  x.fillStyle="#f60";x.fillRect(10,5,100,20);
+  x.fillStyle="#069";x.fillText("Humain 100% wallah",4,10);
+  return c.toDataURL();
+}
+
+function shortHash(s){
+  let h=0;
+  for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))|0}
+  return (h>>>0).toString(16);
+}
+
+function voices(){
+  return new Promise(r=>{
+    if(!("speechSynthesis" in window))return r(null);
+    const n=speechSynthesis.getVoices().length;
+    if(n)return r(n);
+    const t=setTimeout(()=>r(speechSynthesis.getVoices().length),1200);
+    speechSynthesis.onvoiceschanged=()=>{clearTimeout(t);r(speechSynthesis.getVoices().length)};
+  });
+}
+
+function beh(){
+  const t=B.move+B.touch+B.scroll+B.click+B.key;
+  let s="ok";
+  if(B.fake>0)s="bad";else if(t<5)s="warn";
+  let v=B.move+" mouvements · "+B.touch+" touchers · "+B.scroll+" scrolls · "+B.click+" clics · "+B.key+" touches";
+  if(B.fake)v+=" · "+B.fake+" événement(s) artificiel(s)";
+  return{cat:"Comportement",name:BEH_NAME,s,v,why:"<b>Pourquoi ça compte :</b> les anti-bots regardent si quelqu’un touche, bouge ou scrolle avant d’agir. Zéro interaction, c’est un comportement de script. Les événements « non fiables » (générés par du code) sont un très mauvais signe. <b>Piste :</b> compteur en direct, touche l’écran, scrolle, tape un truc, et ça passe au vert."};
+}
+
+const getter=(o,p)=>{const d=Object.getOwnPropertyDescriptor(o,p);return d&&d.get};
+
+function tzOffsetIntl(tz){
+  const t=Math.floor(Date.now()/1000)*1000;
+  const parts=new Intl.DateTimeFormat("en-US",{timeZone:tz,hourCycle:"h23",year:"numeric",month:"numeric",day:"numeric",hour:"numeric",minute:"numeric",second:"numeric"}).formatToParts(new Date(t));
+  const p={};
+  parts.forEach(x=>{p[x.type]=x.value});
+  return -Math.round((Date.UTC(p.year,p.month-1,p.day,p.hour,p.minute,p.second)-t)/60000);
+}
+
+function fontCount(){
+  const list=["Arial","Verdana","Times New Roman","Courier New","Georgia","Trebuchet MS","Comic Sans MS","Impact","Roboto","Noto Sans","Helvetica","Segoe UI","Tahoma","Calibri","Cambria","Consolas","Ubuntu","DejaVu Sans","Liberation Sans","Menlo","Monaco","Lucida Console","Palatino","Garamond","Futura"];
+  const bases=["monospace","sans-serif","serif"];
+  const s=document.createElement("span");
+  s.style.cssText="position:absolute;left:-9999px;font-size:72px;visibility:hidden";
+  s.textContent="mmmmmmmmmmlli";
+  document.body.appendChild(s);
+  const w={};
+  bases.forEach(b=>{s.style.fontFamily=b;w[b]=s.offsetWidth});
+  let n=0;
+  list.forEach(f=>{if(bases.some(b=>{s.style.fontFamily='"'+f+'",'+b;return s.offsetWidth!==w[b]}))n++});
+  s.remove();
+  return n;
+}
+
+async function audioPrint(){
+  const C=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  if(!C)return null;
+  const ctx=new C(1,5000,44100),o=ctx.createOscillator(),c=ctx.createDynamicsCompressor();
+  o.type="triangle";o.frequency.value=10000;
+  o.connect(c);c.connect(ctx.destination);o.start(0);
+  const d=(await ctx.startRendering()).getChannelData(0);
+  let s=0;
+  for(let i=4500;i<5000;i++)s+=Math.abs(d[i]);
+  return s;
+}
+
+function workerInfo(){
+  return new Promise(r=>{
+    try{
+      const src="postMessage({ua:navigator.userAgent,hc:navigator.hardwareConcurrency,lang:navigator.language,plat:navigator.platform})";
+      const w=new Worker(URL.createObjectURL(new Blob([src],{type:"text/javascript"})));
+      const t=setTimeout(()=>{w.terminate();r(null)},1500);
+      w.onmessage=e=>{clearTimeout(t);w.terminate();r(e.data)};
+      w.onerror=()=>{clearTimeout(t);r(null)};
+    }catch(e){r(null)}
+  });
+}
+
+async function run(){
+  items=[];
+  const tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||"inconnu";
+  const lang=navigator.language||"";
+  const touch=navigator.maxTouchPoints||0;
+  const plat=navigator.platform||"";
+
+  const wd=navigator.webdriver;
+  add("Automatisation","Drapeau navigator.webdriver",wd===true?"bad":"ok",String(wd),"<b>Pourquoi ça compte :</b> ce drapeau passe à true quand le navigateur est piloté par Selenium, Puppeteer ou Playwright. C’est le premier truc que les sites regardent. <b>Piste :</b> s’il est à true sur ton navigateur normal, regarde du côté d’une extension d’automatisation ou d’une option de débogage à distance.");
+
+  const pat=/^(\$?cdc_|__playwright|__pw_|_phantom|callPhantom|__nightmare|domAutomation|_selenium|__selenium|__webdriver|__driver|__fxdriver)/i;
+  let found=[];
+  try{found=Object.getOwnPropertyNames(window).filter(k=>pat.test(k))}catch(e){}
+  try{found=found.concat(Object.keys(document).filter(k=>pat.test(k)))}catch(e){}
+  ["webdriver","selenium","driver"].forEach(a=>{if(document.documentElement.getAttribute(a)!==null)found.push("attribut "+a)});
+  add("Automatisation","Traces d’outils d’automatisation",found.length?"bad":"ok",found.length?found.join(", "):"aucune trace","<b>Pourquoi ça compte :</b> les outils d’automatisation laissent des variables globales bien connues (cdc_, __playwright, callPhantom…). <b>Piste :</b> s’il y en a, c’est un outil ou une extension qui pilote la page, à désinstaller ou désactiver.");
+
+  const uaBad=!UA||/HeadlessChrome|PhantomJS|Puppeteer|Playwright|Selenium|python-requests|curl\/|wget|\bbot\b|crawler|spider/i.test(UA);
+  add("Automatisation","User-Agent",uaBad?"bad":"ok",UA||"vide","<b>Pourquoi ça compte :</b> un User-Agent vide ou contenant « Headless », « bot » ou le nom d’un outil de scraping est refusé direct par pas mal de sites. <b>Piste :</b> si tu as un module qui change ton User-Agent, vérifie qu’il n’a pas mis n’importe quoi.");
+
+  const own=Object.getOwnPropertyDescriptor(navigator,"webdriver");
+  const proto=Object.getOwnPropertyDescriptor(Navigator.prototype,"webdriver");
+  const getterNative=proto&&proto.get?nativeFn(proto.get):true;
+  const permsNative=navigator.permissions?nativeFn(navigator.permissions.query):true;
+  const tamper=!!own||!getterNative||!permsNative;
+  add("Automatisation","Fonctions du navigateur trafiquées",tamper?"bad":"ok",tamper?"fonctions natives modifiées":"fonctions natives intactes","<b>Pourquoi ça compte :</b> certains outils cachent webdriver en réécrivant des fonctions du navigateur. Ironie : ce camouflage se repère, et il est plus suspect que le drapeau lui-même. <b>Piste :</b> désactive les extensions de type « anti-détection », « spoofer » ou « fingerprint changer ».");
+
+  const L=navigator.languages;
+  const langBad=!L||!L.length;
+  add("Cohérence","Langues du navigateur",langBad?"bad":(L[0]!==lang?"warn":"ok"),langBad?"liste vide":L.join(", "),"<b>Pourquoi ça compte :</b> un vrai navigateur annonce toujours au moins une langue. Une liste vide ou une première langue qui ne colle pas avec la langue principale sent le navigateur bricolé. <b>Piste :</b> vérifie les langues dans les réglages du navigateur.");
+
+  if(!MOBILE_UA){
+    const pl=navigator.plugins?navigator.plugins.length:0;
+    add("Cohérence","Modules intégrés (plugins)",pl===0?"warn":"ok",pl+" module(s)","<b>Pourquoi ça compte :</b> un Chrome de bureau normal expose au moins le lecteur PDF. Zéro plugin est typique d’un navigateur sans interface. <b>Piste :</b> sur ordinateur, teste avec un profil de navigateur propre, sans extension.");
+  }
+
+  if(/Chrome\//.test(UA)&&!/Edg\/|OPR\/|Firefox\//.test(UA)){
+    const hasChrome=typeof window.chrome!=="undefined";
+    add("Cohérence","Objet window.chrome",hasChrome?"ok":"warn",hasChrome?"présent":"absent alors que l’UA dit Chrome","<b>Pourquoi ça compte :</b> un vrai Chrome possède cet objet. S’il manque alors que tu te dis Chrome, c’est un faux Chrome (navigateur modifié ou WebView bricolée). <b>Piste :</b> utilise le vrai Chrome, pas un navigateur basé dessus avec des options exotiques.");
+  }
+
+  let platBad=false;
+  if(/Android/.test(UA)&&!/Linux|Android/i.test(plat))platBad=true;
+  if(/iPhone|iPad/.test(UA)&&!/iPhone|iPad|Mac/i.test(plat))platBad=true;
+  if(/Windows/.test(UA)&&!/Win/i.test(plat))platBad=true;
+  if(/Macintosh/.test(UA)&&!/Mac/i.test(plat))platBad=true;
+  add("Cohérence","Système annoncé vs plateforme réelle",platBad?"bad":"ok",plat||"inconnue","<b>Pourquoi ça compte :</b> si l’UA dit Windows mais que la plateforme répond Linux, quelqu’un ment. Les sites croisent ces deux infos. <b>Piste :</b> coupe tout module qui change ton identité de navigateur.");
+
+  if(navigator.userAgentData){
+    const brands=(navigator.userAgentData.brands||[]).map(b=>b.brand+" "+b.version).join(", ");
+    const mm=navigator.userAgentData.mobile!==MOBILE_UA;
+    add("Cohérence","Client Hints (userAgentData)",mm?"bad":"ok",(navigator.userAgentData.mobile?"mobile":"bureau")+" · "+brands,"<b>Pourquoi ça compte :</b> deuxième source d’identité du navigateur, qui doit dire la même chose que le User-Agent. Une contradiction mobile/bureau trahit une falsification. <b>Piste :</b> si tu as forcé un autre User-Agent, remets l’original.");
+  }
+
+  let tS="ok",tV=touch+" point(s) tactile(s)",tW="<b>Pourquoi ça compte :</b> un téléphone annoncé sans écran tactile, ou un « ordinateur » avec un petit écran tactile, ça ressemble à un émulateur. <b>Piste :</b> RAS.";
+  if(MOBILE_UA&&touch===0){tS="warn";tV+=" alors que l’UA dit mobile";tW="<b>Pourquoi ça compte :</b> un mobile sans tactile ressemble à un émulateur. <b>Piste :</b> désactive l’émulation mobile des outils de développement.";}
+  else if(!MOBILE_UA&&touch>0&&Math.min(screen.width,screen.height)<700){tS="warn";tV+=" · UA bureau sur petit écran tactile";tW="<b>Pourquoi ça compte :</b> c’est le signe du mode « version pour ordinateur » activé sur un téléphone. Ton appareil se présente comme un PC, mais il a un écran de 6 pouces tactile : incohérent, donc suspect. <b>Piste :</b> désactive « Site pour ordinateur » dans le menu du navigateur.";}
+  add("Cohérence","Tactile vs type d’appareil",tS,tV,tW);
+
+  const frTz=/Europe\/(Paris|Brussels|Luxembourg|Zurich|Monaco)|America\/(Toronto|Montreal|Martinique|Guadeloupe|Cayenne|Port-au-Prince|Miquelon)|Africa\/|Indian\/|Pacific\/(Tahiti|Noumea|Wallis|Marquesas)|Atlantic\/(St_Pierre|Miquelon)/;
+  const tzBad=/^fr/i.test(lang)&&!frTz.test(tz);
+  add("Cohérence","Fuseau horaire vs langue",tzBad?"warn":"ok",tz+" · "+lang,"<b>Pourquoi ça compte :</b> un navigateur en français avec un fuseau horaire à l’autre bout du monde est typique d’un VPN ou d’un serveur loué. <b>Piste :</b> coupe le VPN ou aligne le fuseau horaire de l’appareil sur le pays de ta connexion.");
+
+  const zero=!screen.width||!screen.height||window.outerWidth===0||window.innerWidth===0;
+  const defaultSize=!MOBILE_UA&&screen.width===800&&screen.height===600;
+  add("Matériel","Écran et fenêtre",zero?"bad":(defaultSize?"warn":"ok"),screen.width+"×"+screen.height+" · fenêtre "+window.innerWidth+"×"+window.innerHeight+" · ratio "+window.devicePixelRatio,"<b>Pourquoi ça compte :</b> des dimensions nulles, ou le classique 800×600, trahissent un navigateur sans écran. <b>Piste :</b> RAS si tu navigues normalement.");
+
+  const g=webgl();
+  if(!g){
+    add("Matériel","Carte graphique (WebGL)","warn","indisponible","<b>Pourquoi ça compte :</b> un vrai appareil sait presque toujours faire du WebGL. Son absence évoque un environnement sans GPU. <b>Piste :</b> active l’accélération matérielle dans les réglages du navigateur.");
+  }else{
+    const soft=/SwiftShader|llvmpipe|softpipe|Mesa OffScreen|Microsoft Basic Render/i.test(g.r+" "+g.v);
+    add("Matériel","Carte graphique (WebGL)",soft?"bad":"ok",g.r+" ("+g.v+")","<b>Pourquoi ça compte :</b> SwiftShader ou llvmpipe, c’est du rendu logiciel, la signature des navigateurs sans écran sur serveur. <b>Piste :</b> si c’est ton cas, active l’accélération matérielle ou mets à jour tes pilotes graphiques.");
+  }
+
+  const hc=navigator.hardwareConcurrency;
+  const dm=navigator.deviceMemory;
+  add("Matériel","Processeur et mémoire",(!hc||hc<2)?"warn":"ok",(hc||"?")+" cœurs · "+(dm?dm+" Go (arrondi)":"mémoire non communiquée"),"<b>Pourquoi ça compte :</b> un seul cœur, c’est l’appareil de base d’une machine virtuelle. Les vrais téléphones en ont 6 à 8. <b>Piste :</b> RAS si ton appareil est un vrai.");
+
+  const gv=await voices();
+  add("Matériel","Voix de synthèse vocale",gv===null?"info":(gv===0?"warn":"ok"),gv===null?"API absente":gv+" voix","<b>Pourquoi ça compte :</b> un navigateur sans interface n’a en général aucune voix installée. Un vrai appareil en a. <b>Piste :</b> installe un moteur de synthèse vocale dans les réglages du système.");
+
+  let md=null;
+  try{if(navigator.mediaDevices&&navigator.mediaDevices.enumerateDevices)md=(await navigator.mediaDevices.enumerateDevices()).length}catch(e){}
+  add("Matériel","Micros, caméras, haut-parleurs",md===null?"info":(md===0?"warn":"ok"),md===null?"non disponible":md+" périphérique(s)","<b>Pourquoi ça compte :</b> un serveur n’a ni micro ni caméra. Zéro périphérique est un indice de plus. <b>Piste :</b> RAS sur un vrai appareil.");
+
+  try{
+    const a=canvasPrint(),b=canvasPrint();
+    const noisy=a!==b;
+    add("Vie privée","Empreinte canvas",noisy?"warn":"ok",noisy?"résultat différent à chaque appel (bruit ajouté)":"stable ("+shortHash(a)+")","<b>Pourquoi ça compte :</b> certains navigateurs et extensions anti-pistage brouillent le dessin canvas. C’est bien pour ta vie privée, mais un résultat qui change à chaque fois est une anomalie qu’on repère. <b>Piste :</b> si un site te bloque, désactive temporairement la protection anti-empreinte pour lui.");
+  }catch(e){
+    add("Vie privée","Empreinte canvas","warn","canvas bloqué","<b>Pourquoi ça compte :</b> un canvas bloqué est rare chez un utilisateur lambda. <b>Piste :</b> vérifie tes extensions de confidentialité.");
+  }
+
+  add("Vie privée","Cookies",navigator.cookieEnabled?"ok":"bad",navigator.cookieEnabled?"activés":"désactivés","<b>Pourquoi ça compte :</b> beaucoup d’anti-bots posent un cookie puis le relisent. Sans cookies, tu rates le test. <b>Piste :</b> autorise les cookies, au moins pour les sites qui t’embêtent.");
+
+  let ls=true;
+  try{localStorage.setItem("_t","1");localStorage.removeItem("_t")}catch(e){ls=false}
+  add("Vie privée","Stockage local",ls?"ok":"warn",ls?"fonctionne":"bloqué","<b>Pourquoi ça compte :</b> même logique que les cookies, les anti-bots y stockent un jeton de confiance. <b>Piste :</b> évite la navigation privée stricte et les bloqueurs trop agressifs.");
+
+  const dnt=navigator.doNotTrack,gpc=navigator.globalPrivacyControl;
+  add("Vie privée","Ne pas me suivre (DNT / GPC)","info","DNT : "+(dnt||"non défini")+" · GPC : "+(gpc===undefined?"non défini":gpc),"<b>Pourquoi ça compte :</b> pas un critère bot en soi, mais combiné avec d’autres réglages de confidentialité, ça rend ton profil plus rare, donc plus facile à remarquer. <b>Piste :</b> rien à faire.");
+
+  const cn=navigator.connection;
+  if(cn){
+    const z=cn.rtt===0;
+    add("Réseau","Connexion annoncée",z?"warn":"ok",(cn.effectiveType||"?")+" · latence "+cn.rtt+" ms · débit "+cn.downlink+" Mb/s"+(cn.saveData?" · économiseur de données":""),"<b>Pourquoi ça compte :</b> une latence de 0 ms n’existe pas en vrai, c’est la valeur par défaut des environnements automatisés. <b>Piste :</b> si tu es sur un VPN ou un proxy, essaie sans.");
+  }else{
+    add("Réseau","Connexion annoncée","info","non exposée par ce navigateur","<b>Pourquoi ça compte :</b> Firefox et Safari ne donnent pas cette info, c’est normal. <b>Piste :</b> rien à faire.");
+  }
+
+  try{
+    if(navigator.permissions&&window.Notification){
+      const p=await navigator.permissions.query({name:"notifications"});
+      const inc=Notification.permission==="denied"&&p.state==="prompt";
+      add("Automatisation","Cohérence des permissions",inc?"bad":"ok","Notification : "+Notification.permission+" · permissions : "+p.state,"<b>Pourquoi ça compte :</b> dans certains Chrome sans interface, les deux API se contredisent : l’une dit « refusé », l’autre « on demandera ». Les sites le savent. <b>Piste :</b> RAS sur un navigateur normal.");
+    }
+  }catch(e){}
+
+  items.push(beh());
+  render();
+}
+
+function el(tag,cls,text){
+  const e=document.createElement(tag);
+  if(cls)e.className=cls;
+  if(text!==undefined)e.textContent=text;
+  return e;
+}
+
+function render(){
+  const list=document.getElementById("list");
+  const open=new Set([...list.querySelectorAll("details[open]")].map(d=>d.dataset.k));
+  list.innerHTML="";
+  const rank={bad:0,warn:1,ok:2,info:3};
+  const pass=i=>filter==="all"||(filter==="issues"&&(i.s==="bad"||i.s==="warn"))||(filter==="ok"&&(i.s==="ok"||i.s==="info"));
+  const src=all();
+  CATS.forEach(cat=>{
+    const g=src.filter(i=>i.cat===cat&&pass(i)).sort((a,b)=>rank[a.s]-rank[b.s]);
+    if(!g.length)return;
+    list.appendChild(el("h3","",cat));
+    g.forEach(i=>{
+      const d=el("details","card "+i.s);
+      d.dataset.k=i.name;
+      if(open.has(i.name))d.open=true;
+      const sm=el("summary");
+      sm.appendChild(el("span","nm",i.name));
+      sm.appendChild(el("span","tag",LABEL[i.s]));
+      sm.appendChild(el("span","vl",i.v));
+      d.appendChild(sm);
+      const w=el("p","why");
+      w.innerHTML=i.why;
+      d.appendChild(w);
+      list.appendChild(d);
+    });
+  });
+  summary();
+}
+
+function summary(){
+  const sc=all().filter(i=>i.s!=="info");
+  const bad=sc.filter(i=>i.s==="bad").length;
+  const warn=sc.filter(i=>i.s==="warn").length;
+  const ok=sc.filter(i=>i.s==="ok").length;
+  const pts=sc.reduce((a,i)=>a+(i.s==="ok"?1:i.s==="warn"?0.5:0),0);
+  const pct=sc.length?Math.round(pts/sc.length*100):0;
+  let cls,stamp,text;
+  if(bad===0&&warn===0){cls="v-ok";stamp="Humain certifié";text="Aucun signal de bot. Ton entrejambe avait raison, Wallah. Si un site te bloque quand même, c’est probablement ton IP ou ton réseau : clique sur « Vérifier mon IP ».";}
+  else if(bad===0){cls="v-warn";stamp="Humain, mais louche";text="Pas de preuve de robot, juste quelques détails qui font lever un sourcil au videur. Ouvre les cartes « Louche » pour voir lesquels.";}
+  else if(bad<3){cls="v-bad";stamp="Suspect";text="Ton navigateur porte une fausse moustache. Il y a "+bad+" truc(s) qui crient « bot » : ouvre les cartes rouges, la piste de correction est dedans.";}
+  else{cls="v-bad";stamp="Robot déguisé";text="Là, c’est un tableau de bord de clignotants. "+bad+" signaux de bot. Bip boup. Regarde les cartes rouges, il y a sûrement une extension, un VPN ou un mode bizarre derrière.";}
+  const v=document.getElementById("verdict");
+  v.className="verdict "+cls;
+  document.getElementById("stamp").textContent=stamp;
+  document.getElementById("pct").textContent=pct+" %";
+  document.getElementById("counts").textContent=ok+" OK · "+warn+" louche(s) · "+bad+" bot-like";
+  document.getElementById("vd").textContent=text;
+}
+
+function report(){
+  const head="Rapport « Suis-je un bot ? » — "+new Date().toLocaleString("fr-FR")+"\nUser-Agent : "+UA+"\n";
+  return head+"\n"+all().map(i=>"["+LABEL[i.s]+"] "+i.name+" : "+i.v).join("\n");
+}
+
+async function checkIP(){
+  const b=document.getElementById("ip");
+  b.disabled=true;b.textContent="Vérification…";
+  const tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||"";
+  try{
+    const r=await fetch("https://ipwho.is/");
+    const j=await r.json();
+    if(!j.success)throw new Error(j.message||"échec");
+    const c=j.connection||{};
+    const org=[c.isp,c.org].filter(Boolean).filter((x,i,a)=>a.indexOf(x)===i).join(" / ")||"fournisseur inconnu";
+    const sus=HOST.test(org);
+    const abroad=!sus&&tz==="Europe/Paris"&&j.country_code&&j.country_code!=="FR";
+    let s="ok",why="<b>Pourquoi ça compte :</b> c’est le critère n°1. Les IP de datacenters, de VPN et de proxys ont une mauvaise réputation. Sur données mobiles, ton IP est aussi partagée avec plein d’autres abonnés : si l’un d’eux fait n’importe quoi, tout le monde trinque. <b>Piste :</b> ton IP a l’air d’un abonné normal, rien à signaler de ce côté.";
+    if(sus){s="bad";why="<b>Pourquoi ça compte :</b> ton IP appartient à un hébergeur, un cloud ou un VPN, pas à un particulier. C’est la cause n°1 des « vous êtes un robot ». <b>Piste :</b> coupe le VPN ou le proxy, change de réseau (Wi‑Fi à la maison, 4G/5G), puis relance le test.";}
+    else if(abroad){s="warn";why="<b>Pourquoi ça compte :</b> ton fuseau est Paris mais ton IP est ailleurs, ce qui sent le VPN ou le proxy. <b>Piste :</b> coupe le VPN et réessaie.";}
+    ipItem={cat:"Réseau",name:"Adresse IP et fournisseur",s,v:j.ip+" · "+(j.country_code||"?")+" · "+org,why};
+  }catch(e){
+    ipItem={cat:"Réseau",name:"Adresse IP et fournisseur",s:"warn",v:"vérification impossible ("+e.message+")",why:"<b>Piste :</b> l’appel à ipwho.is a échoué (réseau coupé, bloqueur de pubs ou VPN trop strict). Réessaie plus tard."};
+  }
+  b.disabled=false;b.textContent="Revérifier mon IP";
+  render();
+}
+
+function sched(){
+  if(timer)return;
+  timer=setTimeout(()=>{
+    timer=null;
+    const i=items.findIndex(x=>x.name===BEH_NAME);
+    if(i>-1){items[i]=beh();render()}
+  },700);
+}
+
+const hit=k=>e=>{B[k]++;if(!e.isTrusted)B.fake++;sched()};
+document.addEventListener("pointermove",hit("move"),{passive:true});
+document.addEventListener("touchstart",hit("touch"),{passive:true});
+document.addEventListener("touchmove",hit("touch"),{passive:true});
+window.addEventListener("scroll",hit("scroll"),{passive:true});
+document.addEventListener("wheel",hit("scroll"),{passive:true});
+document.addEventListener("click",hit("click"));
+document.addEventListener("keydown",hit("key"));
+
+document.getElementById("rerun").addEventListener("click",()=>{run()});
+document.getElementById("ip").addEventListener("click",checkIP);
+document.getElementById("copy").addEventListener("click",async e=>{
+  const b=e.currentTarget,txt=report();
+  try{await navigator.clipboard.writeText(txt)}
+  catch(err){
+    const t=document.createElement("textarea");
+    t.value=txt;document.body.appendChild(t);t.select();
+    try{document.execCommand("copy")}catch(x){}
+    t.remove();
+  }
+  b.textContent="Copié";
+  setTimeout(()=>{b.textContent="Copier le rapport"},1500);
+});
+document.getElementById("chips").addEventListener("click",e=>{
+  const b=e.target.closest("button");
+  if(!b)return;
+  filter=b.dataset.f;
+  document.querySelectorAll("#chips button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+  render();
+});
+
+run();
+</script>
+</body>
+</html>
