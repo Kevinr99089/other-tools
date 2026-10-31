@@ -288,8 +288,7 @@ async function run(){
 
   const cn=navigator.connection;
   if(cn){
-    const z=cn.rtt===0;
-    add("Réseau","Connexion annoncée",z?"warn":"ok",(cn.effectiveType||"?")+" · latence "+cn.rtt+" ms · débit "+cn.downlink+" Mb/s"+(cn.saveData?" · économiseur de données":""),"<b>Pourquoi ça compte :</b> une latence de 0 ms n’existe pas en vrai, c’est la valeur par défaut des environnements automatisés. <b>Piste :</b> si tu es sur un VPN ou un proxy, essaie sans.");
+    add("Réseau","Connexion annoncée par le navigateur","info",(cn.effectiveType||"?")+" · latence "+cn.rtt+" ms · débit "+cn.downlink+" Mb/s"+(cn.type?" · "+cn.type:"")+(cn.saveData?" · économiseur de données":""),"<b>À savoir :</b> ces valeurs sont volontairement grossières. « 4g » est la catégorie la plus haute, donc Wi‑Fi, fibre et 5G s’affichent tous « 4g ». Le débit est plafonné à 10 Mb/s et la latence est arrondie. Une latence de 0 ms veut dire « pas encore de mesure », ce qui arrive souvent quand la page est ouverte depuis un fichier local sans trafic réseau. Ce n’est donc pas ta vraie connexion, et ça ne compte plus dans le score. Pour une vraie mesure, utilise « Vérifier mon IP » : elle affiche le temps de réponse réel.");
   }else{
     add("Réseau","Connexion annoncée","info","non exposée par ce navigateur","<b>Pourquoi ça compte :</b> Firefox et Safari ne donnent pas cette info, c’est normal. <b>Piste :</b> rien à faire.");
   }
@@ -299,6 +298,96 @@ async function run(){
       const p=await navigator.permissions.query({name:"notifications"});
       const inc=Notification.permission==="denied"&&p.state==="prompt";
       add("Automatisation","Cohérence des permissions",inc?"bad":"ok","Notification : "+Notification.permission+" · permissions : "+p.state,"<b>Pourquoi ça compte :</b> dans certains Chrome sans interface, les deux API se contredisent : l’une dit « refusé », l’autre « on demandera ». Les sites le savent. <b>Piste :</b> RAS sur un navigateur normal.");
+    }
+  }catch(e){}
+
+  const own2=Object.getOwnPropertyNames(navigator);
+  add("Automatisation","Propriétés de navigator redéfinies",own2.length?"bad":"ok",own2.length?own2.join(", "):"aucune","<b>Pourquoi ça compte :</b> dans un vrai navigateur, les infos comme userAgent ou languages vivent dans le modèle commun, pas sur l’objet navigator lui-même. Quand elles y sont, quelqu’un les a écrasées à la main. <b>Piste :</b> désactive tout module qui « change ton identité » ou « protège ton empreinte ».");
+
+  const watch=[["Function.prototype.toString",Function.prototype.toString],["navigator.userAgent",getter(Navigator.prototype,"userAgent")],["navigator.languages",getter(Navigator.prototype,"languages")],["navigator.hardwareConcurrency",getter(Navigator.prototype,"hardwareConcurrency")],["navigator.platform",getter(Navigator.prototype,"platform")],["Date.getTimezoneOffset",Date.prototype.getTimezoneOffset],["canvas.toDataURL",HTMLCanvasElement.prototype.toDataURL]];
+  if(typeof WebGLRenderingContext!=="undefined")watch.push(["WebGL.getParameter",WebGLRenderingContext.prototype.getParameter]);
+  const fakeFn=watch.filter(x=>x[1]&&!nativeFn(x[1])).map(x=>x[0]);
+  add("Automatisation","Fonctions clés du navigateur",fakeFn.length?"bad":"ok",fakeFn.length?"remplacées : "+fakeFn.join(", "):watch.length+" fonctions vérifiées, toutes d’origine","<b>Pourquoi ça compte :</b> les anti-bots demandent à chaque fonction sensible de montrer son code source. Une fonction d’origine répond « [native code] », une fonction maquillée par un script non. <b>Piste :</b> même remède que ci-dessus, enlève les extensions de camouflage.");
+
+  try{
+    const f=document.createElement("iframe");
+    f.style.display="none";
+    document.body.appendChild(f);
+    const n=f.contentWindow.navigator,diff=[];
+    if(n.userAgent!==UA)diff.push("userAgent");
+    if(n.hardwareConcurrency!==navigator.hardwareConcurrency)diff.push("cœurs");
+    if(String(n.languages)!==String(navigator.languages))diff.push("langues");
+    if(n.webdriver!==navigator.webdriver)diff.push("webdriver");
+    if(n.platform!==navigator.platform)diff.push("plateforme");
+    f.remove();
+    add("Cohérence","Page principale vs cadre intégré (iframe)",diff.length?"bad":"ok",diff.length?"incohérences : "+diff.join(", "):"identiques","<b>Pourquoi ça compte :</b> les outils de camouflage ne patchent souvent que la page principale. Les sites créent un cadre invisible et comparent les réponses : si elles diffèrent, c’est truqué. <b>Piste :</b> RAS si ça passe.");
+  }catch(e){}
+
+  const wk=await workerInfo();
+  if(wk){
+    const diff=[];
+    if(wk.ua!==UA)diff.push("userAgent");
+    if(wk.hc!==navigator.hardwareConcurrency)diff.push("cœurs");
+    if(wk.lang!==navigator.language)diff.push("langue");
+    if(wk.plat!==navigator.platform)diff.push("plateforme");
+    add("Cohérence","Page principale vs tâche de fond (worker)",diff.length?"bad":"ok",diff.length?"incohérences : "+diff.join(", "):"identiques","<b>Pourquoi ça compte :</b> même astuce que l’iframe, avec un autre canal : les faux profils oublient souvent de modifier les tâches de fond du navigateur. <b>Piste :</b> RAS si ça passe.");
+  }else{
+    add("Cohérence","Page principale vs tâche de fond (worker)","info","test impossible (fichier local ou blocage)","<b>Pourquoi ça compte :</b> certains navigateurs refusent les workers depuis un fichier ouvert en local. <b>Piste :</b> rien à faire.");
+  }
+
+  const evl=eval.toString().length;
+  let expect=null;
+  if(/Chrome\//.test(UA)&&!/CriOS/.test(UA))expect=33;
+  else if(/Firefox\/|FxiOS|CriOS|EdgiOS|Safari\//.test(UA))expect=37;
+  if(expect){
+    add("Cohérence","Moteur JavaScript vs navigateur annoncé",evl===expect?"ok":"bad","signature "+evl+" · attendue "+expect,"<b>Pourquoi ça compte :</b> chaque moteur (Chrome, Firefox, Safari) a une petite signature interne bien à lui. Si l’User-Agent dit Chrome mais que le moteur répond Firefox, tu portes un déguisement. <b>Piste :</b> remets l’User-Agent d’origine.");
+  }
+
+  const vd=navigator.vendor,ps=navigator.productSub;
+  let vBad=false;
+  if(/Chrome\//.test(UA)&&!/CriOS/.test(UA))vBad=vd!=="Google Inc.";
+  else if(/Firefox\//.test(UA))vBad=vd!=="";
+  add("Cohérence","Éditeur du navigateur (vendor)",vBad?"warn":"ok",JSON.stringify(vd)+" · "+ps,"<b>Pourquoi ça compte :</b> Chrome se déclare toujours « Google Inc. », Firefox ne déclare rien. Un autre texte trahit un navigateur maison ou modifié. <b>Piste :</b> utilise un navigateur standard à jour.");
+
+  const fine=matchMedia("(pointer:fine)").matches,hov=matchMedia("(hover:hover)").matches,coarse=matchMedia("(pointer:coarse)").matches;
+  let pS="ok",pW="<b>Pourquoi ça compte :</b> la façon dont tu pointes (doigt ou souris) doit coller avec l’appareil annoncé. <b>Piste :</b> RAS.";
+  if(MOBILE_UA&&fine&&hov){pS="warn";pW="<b>Pourquoi ça compte :</b> un mobile qui annonce une souris précise, c’est le signe d’un ordinateur qui se fait passer pour un téléphone (émulation). <b>Piste :</b> désactive l’émulation mobile.";}
+  else if(!MOBILE_UA&&coarse&&!fine){pS="warn";pW="<b>Pourquoi ça compte :</b> tu te présentes comme un ordinateur mais tu pointes avec un doigt : typique du mode « Site pour ordinateur » sur téléphone. <b>Piste :</b> désactive « Site pour ordinateur » dans le menu du navigateur.";}
+  add("Cohérence","Type de pointeur",pS,(fine?"précis (souris)":coarse?"approximatif (doigt)":"autre")+" · survol "+(hov?"oui":"non"),pW);
+
+  try{
+    const a=tzOffsetIntl(tz),b=new Date().getTimezoneOffset();
+    add("Cohérence","Fuseau horaire : deux méthodes de calcul",a!==b?"bad":"ok","décalage "+(-b)+" min · fuseau "+tz,"<b>Pourquoi ça compte :</b> l’heure locale peut se calculer de deux façons. Les faux fuseaux horaires ne trafiquent souvent que l’une des deux : les résultats divergent. <b>Piste :</b> règle le fuseau dans les paramètres de l’appareil, pas avec une extension.");
+  }catch(e){}
+
+  const il=(Intl.DateTimeFormat().resolvedOptions().locale||"");
+  const locBad=lang&&il.slice(0,2).toLowerCase()!==lang.slice(0,2).toLowerCase();
+  add("Cohérence","Langue du navigateur vs régionale (Intl)",locBad?"warn":"ok",lang+" · "+il,"<b>Pourquoi ça compte :</b> les formats de date et de nombre doivent suivre la langue du navigateur. Un décalage vient d’un réglage trafiqué. <b>Piste :</b> remets la langue dans les réglages du système.");
+
+  if(!MOBILE_UA&&/Chrome\//.test(UA)&&navigator.pdfViewerEnabled===false){
+    add("Cohérence","Lecteur PDF intégré","warn","désactivé","<b>Pourquoi ça compte :</b> Chrome de bureau a un lecteur PDF activé d’origine. Désactivé, ça évoque un navigateur sans interface. <b>Piste :</b> réactive-le dans les réglages de confidentialité du site.");
+  }
+
+  const fc=fontCount();
+  add("Matériel","Polices installées",fc<2?"warn":"ok",fc+" police(s) courante(s) détectée(s)","<b>Pourquoi ça compte :</b> un vrai appareil a des polices variées. Un serveur ou un conteneur n’en a presque aucune. <b>Piste :</b> RAS sur un appareil normal.");
+
+  try{
+    const a1=await audioPrint(),a2=await audioPrint();
+    if(a1===null){
+      add("Matériel","Empreinte audio","info","API audio absente","<b>Pourquoi ça compte :</b> la carte son produit un résultat unique par appareil. <b>Piste :</b> rien à faire.");
+    }else{
+      const s=a1===0?"warn":(a1!==a2?"warn":"ok");
+      add("Matériel","Empreinte audio",s,a1===0?"silence total":(a1!==a2?"instable (bruit ajouté)":"stable ("+a1.toFixed(4)+")"),"<b>Pourquoi ça compte :</b> le calcul d’un son est légèrement différent d’un appareil à l’autre. Un résultat nul veut dire « pas de pile audio » (serveur), un résultat qui bouge veut dire « bruit ajouté » (anti-pistage). <b>Piste :</b> si un site te bloque, désactive la protection anti-empreinte pour lui.");
+    }
+  }catch(e){
+    add("Matériel","Empreinte audio","warn","bloquée","<b>Pourquoi ça compte :</b> un blocage de l’API audio est rare chez un utilisateur lambda. <b>Piste :</b> vérifie tes extensions de confidentialité.");
+  }
+
+  try{
+    if(navigator.storage&&navigator.storage.estimate){
+      const q=(await navigator.storage.estimate()).quota;
+      const mb=Math.round(q/1048576);
+      add("Vie privée","Espace de stockage accordé",mb<150?"warn":"ok",mb+" Mo","<b>Pourquoi ça compte :</b> la navigation privée et certains environnements jetables reçoivent un quota de stockage minuscule. Les sites s’en servent pour détecter la navigation privée. <b>Piste :</b> utilise une fenêtre normale.");
     }
   }catch(e){}
 
@@ -372,8 +461,10 @@ async function checkIP(){
   b.disabled=true;b.textContent="Vérification…";
   const tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||"";
   try{
-    const r=await fetch("https://ipwho.is/");
+    const t0=performance.now();
+    const r=await fetch("https://ipwho.is/",{cache:"no-store"});
     const j=await r.json();
+    const ms=Math.round(performance.now()-t0);
     if(!j.success)throw new Error(j.message||"échec");
     const c=j.connection||{};
     const org=[c.isp,c.org].filter(Boolean).filter((x,i,a)=>a.indexOf(x)===i).join(" / ")||"fournisseur inconnu";
@@ -382,7 +473,7 @@ async function checkIP(){
     let s="ok",why="<b>Pourquoi ça compte :</b> c’est le critère n°1. Les IP de datacenters, de VPN et de proxys ont une mauvaise réputation. Sur données mobiles, ton IP est aussi partagée avec plein d’autres abonnés : si l’un d’eux fait n’importe quoi, tout le monde trinque. <b>Piste :</b> ton IP a l’air d’un abonné normal, rien à signaler de ce côté.";
     if(sus){s="bad";why="<b>Pourquoi ça compte :</b> ton IP appartient à un hébergeur, un cloud ou un VPN, pas à un particulier. C’est la cause n°1 des « vous êtes un robot ». <b>Piste :</b> coupe le VPN ou le proxy, change de réseau (Wi‑Fi à la maison, 4G/5G), puis relance le test.";}
     else if(abroad){s="warn";why="<b>Pourquoi ça compte :</b> ton fuseau est Paris mais ton IP est ailleurs, ce qui sent le VPN ou le proxy. <b>Piste :</b> coupe le VPN et réessaie.";}
-    ipItem={cat:"Réseau",name:"Adresse IP et fournisseur",s,v:j.ip+" · "+(j.country_code||"?")+" · "+org,why};
+    ipItem={cat:"Réseau",name:"Adresse IP et fournisseur",s,v:j.ip+" · "+(j.country_code||"?")+" · "+org+" · réponse en "+ms+" ms (mesuré)",why};
   }catch(e){
     ipItem={cat:"Réseau",name:"Adresse IP et fournisseur",s:"warn",v:"vérification impossible ("+e.message+")",why:"<b>Piste :</b> l’appel à ipwho.is a échoué (réseau coupé, bloqueur de pubs ou VPN trop strict). Réessaie plus tard."};
   }
