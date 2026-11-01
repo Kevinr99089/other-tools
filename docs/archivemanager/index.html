@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionnaire Archive.org</title>
+    <style>*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.visible{visibility:visible}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:.25rem}.mb-2{margin-bottom:.5rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mt-4{margin-top:1rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.table{display:table}.hidden{display:none}.h-2{height:.5rem}.h-4{height:1rem}.h-full{height:100%}.min-h-screen{min-height:100vh}.w-0{width:0}.w-2{width:.5rem}.w-4{width:1rem}.w-full{width:100%}.min-w-0{min-width:0}.max-w-2xl{max-width:42rem}.max-w-6xl{max-width:72rem}.max-w-xl{max-width:36rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.border-collapse{border-collapse:collapse}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}.cursor-not-allowed{cursor:not-allowed}.cursor-pointer{cursor:pointer}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.space-x-2>:not([hidden])~:not([hidden]){--tw-space-x-reverse:0;margin-right:calc(.5rem*var(--tw-space-x-reverse));margin-left:calc(.5rem*(1 - var(--tw-space-x-reverse)))}.space-y-2>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.5rem*var(--tw-space-y-reverse))}.space-y-4>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem*var(--tw-space-y-reverse))}.space-y-6>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem*var(--tw-space-y-reverse))}.divide-y>:not([hidden])~:not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px*(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px*var(--tw-divide-y-reverse))}.divide-slate-800>:not([hidden])~:not([hidden]){--tw-divide-opacity:1;border-color:rgb(30 41 59/var(--tw-divide-opacity,1))}.divide-slate-800\/60>:not([hidden])~:not([hidden]){border-color:rgba(30,41,59,.6)}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.whitespace-nowrap{white-space:nowrap}.break-words{overflow-wrap:break-word}.break-all{word-break:break-all}.rounded{border-radius:.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-amber-500{--tw-border-opacity:1;border-color:rgb(245 158 11/var(--tw-border-opacity,1))}.border-emerald-900{--tw-border-opacity:1;border-color:rgb(6 78 59/var(--tw-border-opacity,1))}.border-emerald-900\/50{border-color:rgba(6,78,59,.5)}.border-red-900{--tw-border-opacity:1;border-color:rgb(127 29 29/var(--tw-border-opacity,1))}.border-red-900\/50{border-color:rgba(127,29,29,.5)}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85/var(--tw-border-opacity,1))}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59/var(--tw-border-opacity,1))}.border-transparent{border-color:transparent}.bg-amber-500{--tw-bg-opacity:1;background-color:rgb(245 158 11/var(--tw-bg-opacity,1))}.bg-amber-600{--tw-bg-opacity:1;background-color:rgb(217 119 6/var(--tw-bg-opacity,1))}.bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129/var(--tw-bg-opacity,1))}.bg-emerald-950{--tw-bg-opacity:1;background-color:rgb(2 44 34/var(--tw-bg-opacity,1))}.bg-emerald-950\/50{background-color:rgba(2,44,34,.5)}.bg-red-500{--tw-bg-opacity:1;background-color:rgb(239 68 68/var(--tw-bg-opacity,1))}.bg-red-950{--tw-bg-opacity:1;background-color:rgb(69 10 10/var(--tw-bg-opacity,1))}.bg-red-950\/50{background-color:rgba(69,10,10,.5)}.bg-red-950\/80{background-color:rgba(69,10,10,.8)}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59/var(--tw-bg-opacity,1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42/var(--tw-bg-opacity,1))}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(2 6 23/var(--tw-bg-opacity,1))}.p-2{padding:.5rem}.p-2\.5{padding:.625rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-2\.5{padding-left:.625rem;padding-right:.625rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-2\.5{padding-top:.625rem;padding-bottom:.625rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pt-2{padding-top:.5rem}.pt-4{padding-top:1rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.normal-case{text-transform:none}.tracking-normal{letter-spacing:0}.tracking-tight{letter-spacing:-.025em}.tracking-wider{letter-spacing:.05em}.text-amber-400{--tw-text-opacity:1;color:rgb(251 191 36/var(--tw-text-opacity,1))}.text-amber-600{--tw-text-opacity:1;color:rgb(217 119 6/var(--tw-text-opacity,1))}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183/var(--tw-text-opacity,1))}.text-emerald-400{--tw-text-opacity:1;color:rgb(52 211 153/var(--tw-text-opacity,1))}.text-red-300{--tw-text-opacity:1;color:rgb(252 165 165/var(--tw-text-opacity,1))}.text-red-400{--tw-text-opacity:1;color:rgb(248 113 113/var(--tw-text-opacity,1))}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249/var(--tw-text-opacity,1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240/var(--tw-text-opacity,1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225/var(--tw-text-opacity,1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184/var(--tw-text-opacity,1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139/var(--tw-text-opacity,1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105/var(--tw-text-opacity,1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.underline{text-decoration-line:underline}.line-through{text-decoration-line:line-through}.opacity-50{opacity:.5}.shadow-lg{--tw-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color),0 4px 6px -4px var(--tw-shadow-color)}.shadow-lg,.shadow-md{box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color),0 2px 4px -2px var(--tw-shadow-color)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color),0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-amber-600{--tw-shadow-color:#d97706;--tw-shadow:var(--tw-shadow-colored)}.shadow-amber-600\/20{--tw-shadow-color:rgba(217,119,6,.2);--tw-shadow:var(--tw-shadow-colored)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.duration-200{transition-duration:.2s}.file\:mr-4::file-selector-button{margin-right:1rem}.file\:rounded-xl::file-selector-button{border-radius:.75rem}.file\:border-0::file-selector-button{border-width:0}.file\:bg-slate-800::file-selector-button{--tw-bg-opacity:1;background-color:rgb(30 41 59/var(--tw-bg-opacity,1))}.file\:px-4::file-selector-button{padding-left:1rem;padding-right:1rem}.file\:py-2\.5::file-selector-button{padding-top:.625rem;padding-bottom:.625rem}.file\:text-sm::file-selector-button{font-size:.875rem;line-height:1.25rem}.file\:font-semibold::file-selector-button{font-weight:600}.file\:text-slate-200::file-selector-button{--tw-text-opacity:1;color:rgb(226 232 240/var(--tw-text-opacity,1))}.hover\:bg-amber-500:hover{--tw-bg-opacity:1;background-color:rgb(245 158 11/var(--tw-bg-opacity,1))}.hover\:bg-red-900:hover{--tw-bg-opacity:1;background-color:rgb(127 29 29/var(--tw-bg-opacity,1))}.hover\:bg-slate-700:hover{--tw-bg-opacity:1;background-color:rgb(51 65 85/var(--tw-bg-opacity,1))}.hover\:bg-slate-900\/50:hover{background-color:rgba(15,23,42,.5)}.hover\:text-amber-300:hover{--tw-text-opacity:1;color:rgb(252 211 77/var(--tw-text-opacity,1))}.hover\:text-slate-200:hover{--tw-text-opacity:1;color:rgb(226 232 240/var(--tw-text-opacity,1))}.hover\:file\:bg-slate-700::file-selector-button:hover{--tw-bg-opacity:1;background-color:rgb(51 65 85/var(--tw-bg-opacity,1))}.focus\:border-amber-500:focus{--tw-border-opacity:1;border-color:rgb(245 158 11/var(--tw-border-opacity,1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-0:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}.disabled\:cursor-not-allowed:disabled{cursor:not-allowed}.disabled\:opacity-50:disabled{opacity:.5}@media (min-width:640px){.sm\:flex-row{flex-direction:row}.sm\:p-6{padding:1.5rem}}</style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-slate-900 border-b border-slate-800 p-4 shadow-md">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-amber-600 p-2.5 rounded-xl text-white shadow-lg shadow-amber-600/20">
+                    <span class="text-xl">📦</span>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">Archive.org Manager</h1>
+                    <p class="text-xs text-slate-400">Interface de gestion S3 &amp; Métadonnées</p>
+                </div>
+            </div>
+            <div id="auth-status" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-red-950/50 text-red-400 border border-red-900/50">
+                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                <span>Clés S3 non configurées</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 space-y-6">
+
+        <div class="flex border-b border-slate-800 gap-2 overflow-x-auto">
+            <button onclick="switchTab('config')" id="tab-config" class="tab-btn px-4 py-2.5 font-medium text-sm border-b-2 border-amber-500 text-amber-400 transition-all flex items-center gap-2 whitespace-nowrap">
+                🔑 Configuration S3
+            </button>
+            <button onclick="switchTab('explorer')" id="tab-explorer" class="tab-btn px-4 py-2.5 font-medium text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all flex items-center gap-2 whitespace-nowrap">
+                📂 Gérer / Explorer un Item
+            </button>
+            <button onclick="switchTab('upload')" id="tab-upload" class="tab-btn px-4 py-2.5 font-medium text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all flex items-center gap-2 whitespace-nowrap">
+                📤 Uploader des fichiers
+            </button>
+        </div>
+
+        <div id="alert-box" class="hidden p-4 rounded-xl text-sm border break-words"></div>
+
+        <div id="panel-config" class="tab-panel space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <h2 class="text-lg font-semibold mb-2 flex items-center gap-2">
+                    🛡️ Identifiants API S3 Internet Archive
+                </h2>
+                <p class="text-sm text-slate-400 mb-6">
+                    Pour interagir avec Archive.org, tu as besoin de tes clés d'accès S3. Tu peux les récupérer sur <a href="https://archive.org/account/s3.php" target="_blank" class="text-amber-400 underline hover:text-amber-300">cette page officielle</a>. Elles sont stockées uniquement dans ton navigateur (localStorage).
+                </p>
+
+                <div class="space-y-4 max-w-xl">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Access Key</label>
+                        <input type="text" id="access-key" placeholder="Ex: 0123456789abcdef..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Secret Key</label>
+                        <input type="password" id="secret-key" placeholder="Ex: fedcba9876543210..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition-colors">
+                    </div>
+                    <button onclick="saveCredentials()" class="bg-amber-600 hover:bg-amber-500 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all shadow-lg shadow-amber-600/20 flex items-center gap-2">
+                        💾 Enregistrer les clés
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="panel-explorer" class="tab-panel hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+                <h2 class="text-lg font-semibold flex items-center gap-2">
+                    🔍 Explorateur d'Item (Dossier Archive.org)
+                </h2>
+                <p class="text-sm text-slate-400">Entre l'identifiant (nom unique de l'item/bucket sur Archive.org) pour voir, télécharger ou supprimer ses fichiers. Exemple : <span class="text-slate-300">vacances-2026</span> (sans / à la fin, ni au début).</p>
+
+                <div class="flex gap-3 max-w-2xl">
+                    <input type="text" id="explorer-identifier" placeholder="Ex: mon-nom-d'utilisateur" class="flex-1 min-w-0 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                    <button onclick="loadItemFiles()" class="bg-amber-600 hover:bg-amber-500 text-white font-medium px-6 py-2.5 rounded-xl text-sm transition-all flex items-center gap-2 shrink-0">
+                        🔄 Charger
+                    </button>
+                </div>
+            </div>
+
+            <div id="files-container" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl hidden">
+                <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+                    <h3 class="font-semibold text-base break-all" id="files-title">Fichiers de l'item</h3>
+                    <span id="file-count" class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full">0 fichier(s)</span>
+                </div>
+                <label class="flex items-center gap-2 text-xs text-slate-400 mb-4 cursor-pointer">
+                    <input type="checkbox" id="show-system" onchange="renderFiles()" class="rounded bg-slate-950 border-slate-800 text-amber-600 focus:ring-0 w-4 h-4">
+                    Afficher les fichiers système d'Archive.org (miniature __ia_thumb.jpg, _meta.xml, _files.xml...)
+                </label>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-xs text-slate-400 uppercase tracking-wider">
+                                <th class="py-3 px-4">Nom du fichier / Chemin</th>
+                                <th class="py-3 px-4">Taille</th>
+                                <th class="py-3 px-4">Format</th>
+                                <th class="py-3 px-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="files-table-body" class="divide-y divide-slate-800/60"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="panel-upload" class="tab-panel hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl max-w-2xl space-y-4">
+                <h2 class="text-lg font-semibold flex items-center gap-2">
+                    📤 Envoyer des fichiers vers Archive.org
+                </h2>
+                <p class="text-sm text-slate-400">Sélectionne un ou plusieurs fichiers et indique l'identifiant de destination. Si l'item n'existe pas, coche l'option de création automatique.</p>
+
+                <div class="space-y-4 pt-2">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Identifiant de l'Item (Bucket) <span class="normal-case tracking-normal font-normal text-amber-400">· ex : vacances-2026 (sans / à la fin)</span></label>
+                        <input type="text" id="upload-identifier" placeholder="Ex: mon-nom-d'utilisateur" autocapitalize="none" autocorrect="off" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Emplacement personnalisé / Nom du fichier dans l'item <span class="normal-case tracking-normal font-normal text-amber-400">· ex : photos/plage.jpg (fichier, sans / à la fin) ou photos/ (dossier, avec / à la fin)</span></label>
+                        <input type="text" id="upload-filename" placeholder="Ex: Dossier1/Dossier2/" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Fichier(s) à uploader</label>
+                        <input type="file" multiple id="upload-file-input" class="w-full text-sm text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700 cursor-pointer">
+                    </div>
+
+                    <div class="flex items-center gap-2 pt-2">
+                        <input type="checkbox" id="auto-make-bucket" checked class="rounded bg-slate-950 border-slate-800 text-amber-600 focus:ring-0 w-4 h-4">
+                        <label for="auto-make-bucket" class="text-sm text-slate-300">Créer automatiquement l'item s'il n'existe pas (x-archive-auto-make-bucket)</label>
+                    </div>
+
+                    <button id="upload-btn" onclick="uploadFile()" class="w-full bg-amber-600 hover:bg-amber-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 rounded-xl text-sm transition-all shadow-lg shadow-amber-600/20 flex items-center justify-center gap-2 mt-4">
+                        ⬆️ Lancer l'upload
+                    </button>
+
+                    <div id="upload-progress-container" class="hidden space-y-2 pt-4">
+                        <div class="flex justify-between gap-3 text-xs text-slate-400">
+                            <span id="upload-status-text" class="break-all">Envoi en cours...</span>
+                            <span id="upload-percent">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
+                            <div id="upload-bar" class="bg-amber-500 h-full w-0 transition-all duration-200"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const IDENTIFIER_RE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/;
+        const ALERT_BASE = 'p-4 rounded-xl text-sm border break-words ';
+        const ALERT_STYLES = {
+            success: 'bg-emerald-950/50 border-emerald-900 text-emerald-300',
+            error: 'bg-red-950/50 border-red-900 text-red-300',
+            info: 'bg-slate-900 border-slate-700 text-slate-300'
+        };
+
+        let currentIdentifier = '';
+        let currentFiles = [];
+        const pendingDeletes = new Set();
+        let alertTimer = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedAccess = localStorage.getItem('ia_access_key');
+            const savedSecret = localStorage.getItem('ia_secret_key');
+            if (savedAccess) document.getElementById('access-key').value = savedAccess;
+            if (savedSecret) document.getElementById('secret-key').value = savedSecret;
+            updateAuthStatus();
+        });
+
+        function escapeHtml(value) {
+            return String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        function encodePath(path) {
+            return path.split('/').filter(part => part.length > 0).map(encodeURIComponent).join('/');
+        }
+
+        function s3Url(identifier, path) {
+            return `https://s3.us.archive.org/${encodeURIComponent(identifier)}/${encodePath(path)}`;
+        }
+
+        function isSystemFile(file) {
+            const name = file.name || '';
+            return name.startsWith('__ia_')
+                || /_(meta\.xml|files\.xml|meta\.sqlite|reviews\.xml|archive\.torrent)$/.test(name)
+                || file.format === 'Metadata'
+                || file.format === 'Item Tile';
+        }
+
+        function updateAuthStatus() {
+            const access = localStorage.getItem('ia_access_key');
+            const secret = localStorage.getItem('ia_secret_key');
+            const badge = document.getElementById('auth-status');
+            if (access && secret) {
+                badge.className = "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-950/50 text-emerald-400 border border-emerald-900/50";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Clés configurées</span>`;
+            } else {
+                badge.className = "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-red-950/50 text-red-400 border border-red-900/50";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span><span>Clés S3 non configurées</span>`;
+            }
+        }
+
+        function saveCredentials() {
+            const access = document.getElementById('access-key').value.trim();
+            const secret = document.getElementById('secret-key').value.trim();
+            if (!access || !secret) {
+                showAlert("Veuillez renseigner les deux clés.", "error");
+                return;
+            }
+            localStorage.setItem('ia_access_key', access);
+            localStorage.setItem('ia_secret_key', secret);
+            updateAuthStatus();
+            showAlert("Clés enregistrées avec succès dans le navigateur !", "success");
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('border-amber-500', 'text-amber-400');
+                b.classList.add('border-transparent', 'text-slate-400');
+            });
+            document.getElementById(`panel-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            activeBtn.classList.remove('border-transparent', 'text-slate-400');
+            activeBtn.classList.add('border-amber-500', 'text-amber-400');
+        }
+
+        function showAlert(message, type = 'success', duration = 8000) {
+            const box = document.getElementById('alert-box');
+            clearTimeout(alertTimer);
+            box.className = ALERT_BASE + (ALERT_STYLES[type] || ALERT_STYLES.info);
+            box.innerHTML = message;
+            if (duration > 0) {
+                alertTimer = setTimeout(() => box.classList.add('hidden'), duration);
+            }
+        }
+
+        async function loadItemFiles() {
+            const identifier = document.getElementById('explorer-identifier').value.trim().replace(/[\/\\]+$/, '');
+            if (!IDENTIFIER_RE.test(identifier)) {
+                showAlert("Identifiant d'item invalide : lettres, chiffres, tirets, underscores et points uniquement.", "error");
+                return;
+            }
+
+            try {
+                showAlert("Chargement des fichiers en cours...", "info", 0);
+                const res = await fetch(`https://archive.org/metadata/${encodeURIComponent(identifier)}`, { cache: 'no-store' });
+                if (!res.ok) throw new Error(`Erreur réseau (${res.status}).`);
+                const data = await res.json();
+
+                if (!data || Object.keys(data).length === 0) {
+                    throw new Error("Item introuvable. S'il vient d'être créé, Archive.org peut mettre quelques minutes à l'afficher.");
+                }
+
+                currentIdentifier = identifier;
+                currentFiles = data.files || [];
+                pendingDeletes.clear();
+                document.getElementById('files-title').innerText = `Item : ${identifier}`;
+                document.getElementById('files-container').classList.remove('hidden');
+                renderFiles();
+                showAlert("Liste chargée. Les fichiers envoyés récemment peuvent mettre quelques minutes à apparaître.", "success");
+            } catch (err) {
+                showAlert(`Erreur : ${escapeHtml(err.message)}`, "error");
+            }
+        }
+
+        function renderFiles() {
+            const tbody = document.getElementById('files-table-body');
+            const showSystem = document.getElementById('show-system').checked;
+            const list = currentFiles.filter(file => showSystem || !isSystemFile(file));
+            const hidden = currentFiles.length - list.length;
+            const identifier = currentIdentifier;
+
+            tbody.innerHTML = '';
+            document.getElementById('file-count').innerText = `${list.length} fichier(s)` + (hidden > 0 ? ` · ${hidden} système masqué(s)` : '');
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-slate-500">Aucun fichier à afficher pour le moment. Un fichier tout juste envoyé peut mettre plusieurs minutes à apparaître.</td></tr>`;
+                return;
+            }
+
+            list.forEach(file => {
+                const system = isSystemFile(file);
+                const pending = pendingDeletes.has(file.name);
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-900/50 transition-colors";
+
+                const tdName = document.createElement('td');
+                tdName.className = "py-3 px-4 font-medium break-all " + (pending ? "text-slate-600 line-through" : system ? "text-slate-500" : "text-slate-200");
+                tdName.textContent = pending ? `${file.name} (suppression demandée)` : file.name;
+
+                const tdSize = document.createElement('td');
+                tdSize.className = "py-3 px-4 text-slate-400 whitespace-nowrap";
+                tdSize.textContent = formatBytes(Number(file.size) || 0);
+
+                const tdFormat = document.createElement('td');
+                tdFormat.className = "py-3 px-4 text-slate-400 whitespace-nowrap";
+                tdFormat.textContent = file.format || 'Inconnu';
+
+                const tdActions = document.createElement('td');
+                tdActions.className = "py-3 px-4 text-right whitespace-nowrap space-x-2";
+
+                const link = document.createElement('a');
+                link.href = `https://archive.org/download/${encodeURIComponent(identifier)}/${encodePath(file.name)}`;
+                link.target = '_blank';
+                link.rel = 'noopener';
+                link.title = 'Télécharger';
+                link.className = "inline-block bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs transition-colors";
+                link.innerHTML = '⬇️';
+
+                const btn = document.createElement('button');
+                btn.title = 'Supprimer';
+                btn.className = "bg-red-950/80 hover:bg-red-900 text-red-300 px-3 py-1.5 rounded-lg text-xs transition-colors";
+                btn.innerHTML = '🗑️';
+                btn.addEventListener('click', () => deleteFile(identifier, file.name));
+                if (pending) {
+                    btn.disabled = true;
+                    btn.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+
+                tdActions.append(link, btn);
+                tr.append(tdName, tdSize, tdFormat, tdActions);
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function deleteFile(identifier, filename) {
+            const access = localStorage.getItem('ia_access_key');
+            const secret = localStorage.getItem('ia_secret_key');
+            if (!access || !secret) {
+                showAlert("Clés S3 requises pour supprimer un fichier. Configurez-les dans l'onglet 1.", "error");
+                return;
+            }
+
+            if (!confirm(`Voulez-vous vraiment supprimer "${filename}" de l'item ${identifier} ?`)) return;
+
+            try {
+                const res = await fetch(s3Url(identifier, filename), {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `LOW ${access}:${secret}`,
+                        'x-archive-cascade-delete': '0'
+                    }
+                });
+
+                if (res.ok || res.status === 204) {
+                    pendingDeletes.add(filename);
+                    renderFiles();
+                    showAlert(
+                        `Suppression de "${escapeHtml(filename)}" demandée à Archive.org. C'est une tâche mise en file d'attente : le fichier reste visible tant qu'elle n'est pas terminée. Recharge la liste plus tard pour vérifier.<br>` +
+                        `<a class="underline" target="_blank" rel="noopener" href="https://archive.org/history/${encodeURIComponent(identifier)}">Voir les tâches en cours</a>`,
+                        "success",
+                        0
+                    );
+                } else {
+                    const errText = await res.text();
+                    throw new Error(`Erreur S3 (${res.status}) : ${errText}`);
+                }
+            } catch (err) {
+                showAlert(`Échec de la suppression : ${escapeHtml(err.message)}`, "error");
+            }
+        }
+
+        function sendFile(file, path, identifier, autoMake, access, secret, onProgress) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('PUT', s3Url(identifier, path), true);
+
+                xhr.setRequestHeader('Authorization', `LOW ${access}:${secret}`);
+                if (autoMake) {
+                    xhr.setRequestHeader('x-archive-auto-make-bucket', '1');
+                    xhr.setRequestHeader('x-archive-meta-mediatype', 'data');
+                }
+                xhr.setRequestHeader('x-archive-queue-derive', '0');
+
+                xhr.upload.onprogress = e => {
+                    if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
+                };
+
+                xhr.onload = () => {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        resolve();
+                    } else {
+                        reject(new Error(`Erreur S3 (${xhr.status}) : ${xhr.responseText || 'Accès refusé ou erreur serveur'}`));
+                    }
+                };
+                xhr.onerror = () => reject(new Error("Requête bloquée ou connexion impossible (réseau, clés incorrectes ou blocage CORS du navigateur)."));
+                xhr.onabort = () => reject(new Error("Envoi annulé."));
+
+                xhr.send(file);
+            });
+        }
+
+        async function uploadFile() {
+            const access = localStorage.getItem('ia_access_key');
+            const secret = localStorage.getItem('ia_secret_key');
+            if (!access || !secret) {
+                showAlert("Clés S3 requises pour l'upload. Configurez-les dans l'onglet 1.", "error");
+                return;
+            }
+
+            const identifier = document.getElementById('upload-identifier').value.trim().replace(/[\/\\]+$/, '');
+            const custom = document.getElementById('upload-filename').value.trim().replace(/\\/g, '/').replace(/^\/+/, '');
+            const fileInput = document.getElementById('upload-file-input');
+            const autoMake = document.getElementById('auto-make-bucket').checked;
+
+            if (!IDENTIFIER_RE.test(identifier)) {
+                showAlert("Identifiant d'item invalide : lettres, chiffres, tirets, underscores et points uniquement, sans espace ni accent.", "error");
+                return;
+            }
+
+            const files = Array.from(fileInput.files);
+            if (files.length === 0) {
+                showAlert("Veuillez sélectionner au moins un fichier à uploader.", "error");
+                return;
+            }
+
+            const folder = custom ? custom.replace(/\/*$/, '/') : '';
+            const paths = files.length === 1 && custom && !custom.endsWith('/')
+                ? [custom]
+                : files.map(f => folder + f.name);
+
+            const btn = document.getElementById('upload-btn');
+            const progressContainer = document.getElementById('upload-progress-container');
+            const progressBar = document.getElementById('upload-bar');
+            const progressPercent = document.getElementById('upload-percent');
+            const statusText = document.getElementById('upload-status-text');
+
+            btn.disabled = true;
+            progressContainer.classList.remove('hidden');
+            showAlert("Envoi en cours, ne ferme pas cette page.", "info", 0);
+
+            let done = 0;
+            try {
+                for (let i = 0; i < files.length; i++) {
+                    progressBar.style.width = '0%';
+                    progressPercent.innerText = '0%';
+                    statusText.innerText = `Envoi ${i + 1}/${files.length} : ${paths[i]}`;
+
+                    await sendFile(files[i], paths[i], identifier, autoMake, access, secret, percent => {
+                        progressBar.style.width = percent + '%';
+                        progressPercent.innerText = percent + '%';
+                    });
+                    done++;
+                }
+
+                statusText.innerText = 'Upload terminé avec succès !';
+                progressBar.style.width = '100%';
+                progressPercent.innerText = '100%';
+
+                const idSafe = encodeURIComponent(identifier);
+                showAlert(
+                    `${done} fichier(s) envoyé(s) dans l'item "${escapeHtml(identifier)}". Archive.org les traite en arrière-plan : ils peuvent mettre plusieurs minutes à apparaître dans l'explorateur.<br>` +
+                    `<a class="underline" target="_blank" rel="noopener" href="https://archive.org/details/${idSafe}">Page de l'item</a> · ` +
+                    `<a class="underline" target="_blank" rel="noopener" href="https://archive.org/history/${idSafe}">Tâches en cours</a>`,
+                    "success",
+                    0
+                );
+
+                fileInput.value = '';
+                document.getElementById('upload-filename').value = '';
+                document.getElementById('explorer-identifier').value = identifier;
+            } catch (err) {
+                statusText.innerText = "Échec de l'upload.";
+                showAlert(`Échec après ${done}/${files.length} fichier(s) : ${escapeHtml(err.message)}`, "error", 0);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function formatBytes(bytes, decimals = 2) {
+            if (!bytes || bytes === 0) return '0 Octets';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Octets', 'Ko', 'Mo', 'Go', 'To'];
+            const i = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), sizes.length - 1);
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+    </script>
+</body>
+</html>
